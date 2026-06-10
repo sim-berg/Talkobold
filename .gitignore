@@ -1,0 +1,13 @@
+node_modules/
+dist/
+out/
+build/
+*.log
+.DS_Store
+
+# generated fallback icon (your own assets/icon.png is kept)
+assets/icon.default.png
+
+# local secrets / settings
+.env
+config.local.json

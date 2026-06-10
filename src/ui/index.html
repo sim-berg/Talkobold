@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; media-src 'self' blob:; img-src 'self' data:" />
+  <title>TalkKobold</title>
+  <style>
+    :root {
+      --bg: #1b1b24;
+      --panel: #25252f;
+      --panel2: #2d2d3a;
+      --accent: #6c5ce7;
+      --accent-press: #5a4bd1;
+      --text: #ecedf2;
+      --muted: #9a9ab0;
+      --border: #34343f;
+      --danger: #e0574c;
+      --ok: #4cd07d;
+      --warn: #e0b04c;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      overflow: hidden;
+    }
+    /* draggable title strip */
+    .titlebar {
+      -webkit-app-region: drag;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .titlebar .brand { font-weight: 600; letter-spacing: .2px; }
+    .titlebar .brand small { color: var(--muted); font-weight: 400; margin-left: 6px; }
+    .titlebar .actions { -webkit-app-region: no-drag; display: flex; gap: 2px; }
+    .iconbtn {
+      cursor: pointer; color: var(--muted);
+      border: none; background: transparent; font-size: 15px; padding: 2px 7px;
+      border-radius: 6px; line-height: 1.4;
+    }
+    .iconbtn:hover { background: var(--panel); color: var(--text); }
+    .iconbtn.active { background: var(--panel); color: var(--accent); }
+
+    main { padding: 12px; display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; }
+
+    textarea#text {
+      -webkit-app-region: no-drag;
+      resize: none; width: 100%; height: 84px;
+      background: var(--panel); color: var(--text);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px; font: inherit; outline: none;
+    }
+    textarea#text:focus { border-color: var(--accent); }
+
+    .row { display: flex; gap: 8px; align-items: center; }
+    button.primary {
+      -webkit-app-region: no-drag;
+      flex: 1; cursor: pointer;
+      background: var(--accent); color: #fff; border: none;
+      padding: 10px 14px; border-radius: 10px; font: inherit; font-weight: 600;
+    }
+    button.primary:hover { background: var(--accent-press); }
+    button.primary:disabled { opacity: .5; cursor: default; }
+
+    /* inline monitor (hear-your-own-voice) controls next to Speak */
+    .monitor {
+      -webkit-app-region: no-drag;
+      display: flex; align-items: center; gap: 6px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0 8px; height: 40px;
+    }
+    .monitor.off { opacity: .55; }
+    .monitor button.mute {
+      cursor: pointer; border: none; background: transparent; color: var(--text);
+      font-size: 14px; padding: 4px; border-radius: 6px;
+    }
+    .monitor button.mute:hover { background: var(--panel2); }
+    .monitor input[type=range] { width: 70px; accent-color: var(--accent); }
+
+    .hint { color: var(--muted); font-size: 12px; }
+
+    .phrases-head { display: flex; align-items: center; justify-content: space-between; }
+    .phrases-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .6px; }
+    .phrases-head .iconbtn { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+    .phrases {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      overflow-y: auto; flex: 1; min-height: 0; align-content: start;
+    }
+    .phrases button.phrase {
+      -webkit-app-region: no-drag;
+      cursor: pointer; text-align: left;
+      background: var(--panel); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 10px; font: inherit;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .phrases button.phrase:hover { border-color: var(--accent); }
+
+    /* edit-mode chips */
+    .chip {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 8px; padding: 4px 4px 4px 8px;
+    }
+    .chip input {
+      flex: 1; min-width: 0; background: transparent; border: none;
+      color: var(--text); font: inherit; outline: none;
+    }
+    .chip .del {
+      cursor: pointer; border: none; background: transparent; color: var(--muted);
+      font-size: 14px; padding: 2px 6px; border-radius: 6px;
+    }
+    .chip .del:hover { background: var(--danger); color: #fff; }
+    .phrases .addchip {
+      grid-column: 1 / -1;
+      cursor: pointer; text-align: center; color: var(--muted);
+      background: transparent; border: 1px dashed var(--border);
+      border-radius: 8px; padding: 8px; font: inherit;
+    }
+    .phrases .addchip:hover { border-color: var(--accent); color: var(--text); }
+
+    .statusbar {
+      border-top: 1px solid var(--border);
+      padding: 6px 12px; font-size: 11px; color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .statusbar .msg { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .statusbar .msg.err { color: var(--danger); }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .dot.ok { background: var(--ok); }
+    .dot.warn { background: var(--warn); }
+
+    /* settings overlay */
+    .overlay {
+      position: absolute; inset: 0; background: var(--bg);
+      display: none; flex-direction: column; z-index: 10;
+    }
+    .overlay.show { display: flex; }
+    .overlay .head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      -webkit-app-region: drag;
+    }
+    .overlay .head .iconbtn { -webkit-app-region: no-drag; }
+    .overlay .body { padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field > label { font-size: 12px; color: var(--muted); }
+    .field input[type=text], .field input[type=password], .field select {
+      background: var(--panel); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 10px; font: inherit; outline: none; width: 100%;
+    }
+    .field input:focus, .field select:focus { border-color: var(--accent); }
+    .voicerow { display: flex; gap: 6px; }
+    .voicerow select { flex: 1; }
+    .btn {
+      -webkit-app-region: no-drag; cursor: pointer;
+      background: var(--panel2); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 12px; font: inherit; white-space: nowrap;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .checkline { display: flex; align-items: center; gap: 8px; }
+    .checkline input { accent-color: var(--accent); }
+    .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .statusline { font-size: 12px; color: var(--muted); }
+    .statusline .dot { margin-right: 6px; }
+    .linklike { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0; font: inherit; text-decoration: underline; }
+
+    /* onboarding wizard (first launch) */
+    .wizard .body { gap: 10px; }
+    .wizard .step h2 { margin: 4px 0 8px; font-size: 17px; }
+    .wizard .step p { margin: 0 0 10px; color: var(--text); }
+    .wizard .step p.hint { color: var(--muted); font-size: 12px; }
+    .wizard .step .field { margin-bottom: 10px; }
+    .wizard .logo {
+      width: 56px; height: 56px; border-radius: 14px; margin-bottom: 8px;
+      object-fit: cover; background: var(--panel); border: 1px solid var(--border);
+    }
+    .wizard-nav {
+      margin-top: auto; display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-top: 1px solid var(--border);
+    }
+    .wizard-nav .dots { flex: 1; display: flex; gap: 6px; justify-content: center; }
+    .wizard-nav .dots i {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--border); display: inline-block;
+    }
+    .wizard-nav .dots i.on { background: var(--accent); }
+    .wizard-nav .primary { flex: 0 0 auto; min-width: 96px; }
+    .wizard-nav .btn[disabled] { opacity: .4; cursor: default; }
+    .checkline.big { align-items: flex-start; gap: 10px; margin: 6px 0; }
+    .checkline.big label { line-height: 1.35; }
+  </style>
+</head>
+<body>
+  <div class="titlebar">
+    <div class="brand">TalkKobold</div>
+    <div class="actions">
+      <button class="iconbtn" id="settingsBtn" title="Settings">⚙</button>
+      <button class="iconbtn" id="closeBtn" title="Hide (Ctrl+Alt+Space)">×</button>
+    </div>
+  </div>
+
+  <main>
+    <textarea id="text" placeholder="Type what you want to say…  (Enter to speak, Shift+Enter for a new line)"></textarea>
+
+    <div class="row">
+      <button class="primary" id="speakBtn">Speak</button>
+      <div class="monitor" id="monitor" title="Hear your own voice">
+        <button class="mute" id="muteBtn" title="Mute monitor">🔊</button>
+        <input type="range" id="monVol" min="0" max="100" step="1" />
+      </div>
+    </div>
+
+    <div class="phrases-head">
+      <span class="phrases-label">Quick phrases</span>
+      <button class="iconbtn" id="editPhrasesBtn" title="Edit phrases">edit</button>
+    </div>
+    <div class="phrases" id="phrases"></div>
+  </main>
+
+  <div class="statusbar">
+    <span class="msg" id="statusMsg"></span>
+    <span id="hotkeyStatus"><span class="dot warn"></span>checking hotkey…</span>
+  </div>
+
+  <!-- settings overlay -->
+  <div class="overlay" id="settings">
+    <div class="head">
+      <div class="brand">Settings</div>
+      <button class="iconbtn" id="settingsCloseBtn" title="Back">×</button>
+    </div>
+    <div class="body">
+      <div class="section-title">ElevenLabs</div>
+      <div class="field">
+        <label for="apiKey">API key</label>
+        <input type="password" id="apiKey" placeholder="xi-…" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="voiceSelect">Voice</label>
+        <div class="voicerow">
+          <select id="voiceSelect"><option value="">— enter key, then Refresh —</option></select>
+          <button class="btn" id="refreshVoices">Refresh</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="voiceIdManual">…or voice ID directly</label>
+        <input type="text" id="voiceIdManual" placeholder="voice id" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="modelSelect">Model</label>
+        <select id="modelSelect">
+          <option value="eleven_flash_v2_5">Flash v2.5 (low latency)</option>
+          <option value="eleven_turbo_v2_5">Turbo v2.5</option>
+          <option value="eleven_multilingual_v2">Multilingual v2 (quality)</option>
+        </select>
+      </div>
+
+      <div class="section-title">Virtual microphone</div>
+      <div class="statusline" id="vmStatus"><span class="dot warn"></span>checking…</div>
+      <div class="row" id="vmActions" style="display:none;">
+        <button class="btn" id="vmInstall">Install VB-CABLE</button>
+        <button class="btn" id="vmRecheck">Re-check</button>
+      </div>
+      <div class="field">
+        <label for="vmDevice">Play into (virtual sink)</label>
+        <select id="vmDevice"></select>
+      </div>
+
+      <div class="section-title">Monitor — hear your own voice</div>
+      <div class="checkline">
+        <input type="checkbox" id="monEnabled" />
+        <label for="monEnabled">Play what I say through my own output too</label>
+      </div>
+      <div class="field">
+        <label for="monDevice">Output device</label>
+        <select id="monDevice"></select>
+      </div>
+
+      <div class="section-title">Window &amp; appearance</div>
+      <div class="checkline">
+        <input type="checkbox" id="showOnLaunch" />
+        <label for="showOnLaunch">Show this window when TalkKobold starts</label>
+      </div>
+      <div class="checkline">
+        <input type="checkbox" id="autostart" />
+        <label for="autostart">Start TalkKobold automatically when I log in</label>
+      </div>
+      <p class="hint" style="margin:0;color:var(--muted);font-size:12px;">
+        Hotkey to summon/hide: <b>Ctrl+Alt+Space</b>. Keep "show on launch" on if
+        the hotkey doesn't work on your system (common on Wayland).
+      </p>
+      <div class="row">
+        <button class="btn" id="replayWizard">Replay setup wizard</button>
+      </div>
+      <p class="hint" style="margin:0;color:var(--muted);font-size:12px;">
+        Custom app icon: drop a square PNG at <code>assets/icon.png</code> and restart.
+      </p>
+    </div>
+  </div>
+
+  <!-- onboarding wizard (first launch) -->
+  <div class="overlay wizard" id="wizard">
+    <div class="head">
+      <div class="brand">Welcome to TalkKobold</div>
+    </div>
+    <div class="body">
+      <section class="step" data-step="1">
+        <img class="logo" id="wzLogo" alt="" hidden />
+        <h2>Be heard in voice chats</h2>
+        <p>Type a message and TalkKobold speaks it into a <b>virtual microphone</b>.
+           Choose <b>"TalkKobold Mic"</b> as your mic in Discord, Zoom, or games, and
+           the people you're talking to hear it — and you can hear yourself too.</p>
+        <p class="hint">Three quick steps and you're set.</p>
+      </section>
+
+      <section class="step" data-step="2" hidden>
+        <h2>Connect a voice</h2>
+        <p>TalkKobold uses ElevenLabs to generate speech. Paste your API key, then load your voices.</p>
+        <div class="field">
+          <label for="wzKey">ElevenLabs API key</label>
+          <input type="password" id="wzKey" placeholder="xi-…" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="wzVoice">Voice</label>
+          <div class="voicerow">
+            <select id="wzVoice"><option value="">— load voices —</option></select>
+            <button class="btn" id="wzLoadVoices">Load</button>
+          </div>
+        </div>
+        <p class="hint">No key yet? It's free — sign up at elevenlabs.io, then Profile → API key.
+           You can also do this later in Settings.</p>
+      </section>
+
+      <section class="step" data-step="3" hidden>
+        <h2>Your virtual microphone</h2>
+        <div class="statusline" id="wzVmStatus"><span class="dot warn"></span>checking…</div>
+        <p id="wzVmHelp" style="margin-top:10px;"></p>
+        <div class="row" id="wzVmActions" style="display:none;">
+          <button class="btn" id="wzVmInstall">Install VB-CABLE</button>
+          <button class="btn" id="wzVmRecheck">Re-check</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="4" hidden>
+        <h2>Hear yourself &amp; summon the window</h2>
+        <div class="checkline big">
+          <input type="checkbox" id="wzMonitor" />
+          <label for="wzMonitor">Also play what I say through my own output, so I can hear myself.</label>
+        </div>
+        <p>Summon or hide TalkKobold any time with <b>Ctrl + Alt + Space</b>.</p>
+        <div class="checkline big">
+          <input type="checkbox" id="wzShowOnLaunch" checked />
+          <label for="wzShowOnLaunch">Show this window every time I start TalkKobold.
+            <span class="hint">(Recommended if the hotkey doesn't work — common on Wayland.)</span>
+          </label>
+        </div>
+      </section>
+    </div>
+    <div class="wizard-nav">
+      <button class="btn" id="wzBack" disabled>Back</button>
+      <span class="dots" id="wzDots"></span>
+      <button class="primary" id="wzNext">Next</button>
+    </div>
+  </div>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>

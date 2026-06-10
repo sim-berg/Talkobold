@@ -1,0 +1,48 @@
+{
+  "name": "talkkobold",
+  "version": "0.1.0",
+  "description": "Type text, hear it spoken into a virtual microphone — voice for people who can't talk.",
+  "main": "src/main.js",
+  "author": "TalkKobold",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --no-sandbox",
+    "toggle": "electron . --toggle",
+    "gen-icon": "node scripts/gen-icon.js",
+    "prep-build": "node scripts/gen-icon.js && node scripts/prep-build.js",
+    "dist:win": "npm run prep-build && electron-builder --win --x64",
+    "lint:syntax": "for f in src/main.js src/preload.js src/core/tts.js src/core/phrases.js src/core/audio.js src/platform/electron/store.js src/platform/electron/virtualmic.js src/platform/electron/virtualmic.linux.js src/platform/electron/virtualmic.win.js src/platform/electron/icon.js src/platform/electron/window.js src/platform/electron/hotkey.js src/platform/electron/tray.js scripts/gen-icon.js scripts/prep-build.js; do node --check \"$f\" || exit 1; done"
+  },
+  "build": {
+    "appId": "com.talkkobold.app",
+    "productName": "TalkKobold",
+    "copyright": "Copyright © 2026 TalkKobold",
+    "files": [
+      "src/**/*",
+      "assets/icon.png",
+      "assets/icon.default.png",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "TalkKobold"
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^26.15.2"
+  }
+}
