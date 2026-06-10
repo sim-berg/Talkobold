@@ -60,14 +60,14 @@ if (!gotLock) {
     else if (startup.showOnLaunch) win.show();
     applyAutostart(startup.autostart);
 
-    // Provision the virtual mic up front so "TalkKobold Mic" is selectable in
+    // Provision the virtual mic up front so "Talkobold Mic" is selectable in
     // Discord/Zoom as soon as the app is running. Non-fatal if unavailable.
     const vm = virtualmic.start();
     if (!vm.ok) console.warn('[virtualmic]', vm.error);
 
     const onToggle = () => win.toggle();
     const onQuit = () => {
-      global.__talkkobold_quitting = true;
+      global.__talkobold_quitting = true;
       app.quit();
     };
 

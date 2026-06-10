@@ -1,9 +1,9 @@
 {
-  "name": "talkkobold",
+  "name": "talkobold",
   "version": "0.1.0",
   "description": "Type text, hear it spoken into a virtual microphone — voice for people who can't talk.",
   "main": "src/main.js",
-  "author": "TalkKobold",
+  "author": "Talkobold",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
@@ -15,9 +15,9 @@
     "lint:syntax": "for f in src/main.js src/preload.js src/core/tts.js src/core/phrases.js src/core/audio.js src/platform/electron/store.js src/platform/electron/virtualmic.js src/platform/electron/virtualmic.linux.js src/platform/electron/virtualmic.win.js src/platform/electron/icon.js src/platform/electron/window.js src/platform/electron/hotkey.js src/platform/electron/tray.js scripts/gen-icon.js scripts/prep-build.js; do node --check \"$f\" || exit 1; done"
   },
   "build": {
-    "appId": "com.talkkobold.app",
-    "productName": "TalkKobold",
-    "copyright": "Copyright © 2026 TalkKobold",
+    "appId": "com.talkobold.app",
+    "productName": "Talkobold",
+    "copyright": "Copyright © 2026 Talkobold",
     "files": [
       "src/**/*",
       "assets/icon.png",
@@ -38,7 +38,7 @@
       "runAfterFinish": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "TalkKobold"
+      "shortcutName": "Talkobold"
     }
   },
   "devDependencies": {

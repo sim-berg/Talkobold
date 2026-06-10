@@ -1,4 +1,4 @@
-# TalkKobold — Plan
+# Talkobold — Plan
 
 **Type text, hear it spoken into a virtual microphone.** Voice for people who
 can't talk — so they can join voice chats (Discord, Zoom, WhatsApp calls, games)
@@ -27,16 +27,16 @@ plays speech into it; voice-chat apps select that device as their "microphone."
                                                                     │
                           ┌─────────────────────────────────────────┤
                           ▼ (setSinkId: virtual mic)                 ▼ (setSinkId: your output)
-                  PipeWire "TalkKobold-sink"                    your headphones
+                  PipeWire "Talkobold-sink"                    your headphones
                           │                                     (monitor / sidetone)
                           ▼ loopback
-                  "TalkKobold Mic"  ◀── selected as mic in Discord / Zoom / …
+                  "Talkobold Mic"  ◀── selected as mic in Discord / Zoom / …
 ```
 
 Per-OS provisioning of the virtual device (the only OS-specific piece):
 
 - **Linux** (current dev machine: GNOME/Wayland + PipeWire): app spawns
-  `pw-loopback` to create `TalkKobold-sink` (play target) + `TalkKobold Mic`
+  `pw-loopback` to create `Talkobold-sink` (play target) + `Talkobold Mic`
   (Audio/Source apps pick). Auto-removed on quit.
 - **Windows** (later): user installs **VB-Cable** (free) once; app detects it.
 - **macOS** (later): user installs **BlackHole** (free) once; app detects it.
@@ -92,14 +92,14 @@ feature is desktop-only.
       *(built; final "you hear it" check needs your ElevenLabs key — see
       NEXT-STEPS.md)*
 - [x] **Phase 3 — Virtual mic + monitoring.** App spawns `pw-loopback`
-      (`TalkKobold-sink` → `TalkKobold Mic`), auto-removed on quit; renderer
+      (`Talkobold-sink` → `Talkobold Mic`), auto-removed on quit; renderer
       routes playback to the sink via `setSinkId`, plus a monitor path with
       volume + mute. *(verified: a 440 Hz tone played into the sink was captured
       from the virtual mic at full level)*
 - [x] **Phase 4 — Quick phrases.** Editable, persisted grid served from
       `core/phrases.js` over IPC (add / rename / delete, normalised + saved).
 - [ ] **Phase 5 — Polish.** Wayland hotkey fallback UX, autostart, README for
-      selecting "TalkKobold Mic" in Discord/Zoom, error handling, latency tuning.
+      selecting "Talkobold Mic" in Discord/Zoom, error handling, latency tuning.
 - [ ] **Later — Tauri port** (swap `platform/electron/` for Rust + cpal/rodio),
       then **mobile** soundboard.
 

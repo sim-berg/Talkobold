@@ -8,7 +8,7 @@
 // shape.
 //
 // Targets:
-//   - VIRTUAL_MIC: deviceId of the virtual sink (e.g. PipeWire "TalkKobold-sink")
+//   - VIRTUAL_MIC: deviceId of the virtual sink (e.g. PipeWire "Talkobold-sink")
 //   - MONITOR:     deviceId of the user's real output (sidetone), with its own
 //                  volume + mute, so they can hear what they're "saying".
 
@@ -31,9 +31,9 @@ function defaultTargets() {
 
 // Stable name we give the PipeWire virtual sink/source so the renderer can
 // find it in enumerateDevices() by label.
-const VIRTUAL_MIC_LABEL = 'TalkKobold Mic';
-const VIRTUAL_SINK_NODE = 'TalkKobold-sink';
-const VIRTUAL_SOURCE_NODE = 'talkkobold-mic';
+const VIRTUAL_MIC_LABEL = 'Talkobold Mic';
+const VIRTUAL_SINK_NODE = 'Talkobold-sink';
+const VIRTUAL_SOURCE_NODE = 'talkobold-mic';
 
 module.exports = {
   defaultTargets,

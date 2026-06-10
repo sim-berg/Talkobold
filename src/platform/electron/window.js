@@ -21,7 +21,7 @@ function createWindow() {
     alwaysOnTop: true,
     skipTaskbar: true,
     fullscreenable: false,
-    title: 'TalkKobold',
+    title: 'Talkobold',
     icon: iconImage(),
     backgroundColor: '#1b1b24',
     webPreferences: {
@@ -49,7 +49,7 @@ function createWindow() {
 
   // Hide instead of close when the user dismisses it.
   win.on('close', (e) => {
-    if (!global.__talkkobold_quitting) {
+    if (!global.__talkobold_quitting) {
       e.preventDefault();
       win.hide();
     }

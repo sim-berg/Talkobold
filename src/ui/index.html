@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; media-src 'self' blob:; img-src 'self' data:" />
-  <title>TalkKobold</title>
+  <title>Talkobold</title>
   <style>
     :root {
       --bg: #1b1b24;
@@ -203,7 +203,7 @@
 </head>
 <body>
   <div class="titlebar">
-    <div class="brand">TalkKobold</div>
+    <div class="brand">Talkobold</div>
     <div class="actions">
       <button class="iconbtn" id="settingsBtn" title="Settings">⚙</button>
       <button class="iconbtn" id="closeBtn" title="Hide (Ctrl+Alt+Space)">×</button>
@@ -289,11 +289,11 @@
       <div class="section-title">Window &amp; appearance</div>
       <div class="checkline">
         <input type="checkbox" id="showOnLaunch" />
-        <label for="showOnLaunch">Show this window when TalkKobold starts</label>
+        <label for="showOnLaunch">Show this window when Talkobold starts</label>
       </div>
       <div class="checkline">
         <input type="checkbox" id="autostart" />
-        <label for="autostart">Start TalkKobold automatically when I log in</label>
+        <label for="autostart">Start Talkobold automatically when I log in</label>
       </div>
       <p class="hint" style="margin:0;color:var(--muted);font-size:12px;">
         Hotkey to summon/hide: <b>Ctrl+Alt+Space</b>. Keep "show on launch" on if
@@ -311,21 +311,21 @@
   <!-- onboarding wizard (first launch) -->
   <div class="overlay wizard" id="wizard">
     <div class="head">
-      <div class="brand">Welcome to TalkKobold</div>
+      <div class="brand">Welcome to Talkobold</div>
     </div>
     <div class="body">
       <section class="step" data-step="1">
         <img class="logo" id="wzLogo" alt="" hidden />
         <h2>Be heard in voice chats</h2>
-        <p>Type a message and TalkKobold speaks it into a <b>virtual microphone</b>.
-           Choose <b>"TalkKobold Mic"</b> as your mic in Discord, Zoom, or games, and
+        <p>Type a message and Talkobold speaks it into a <b>virtual microphone</b>.
+           Choose <b>"Talkobold Mic"</b> as your mic in Discord, Zoom, or games, and
            the people you're talking to hear it — and you can hear yourself too.</p>
         <p class="hint">Three quick steps and you're set.</p>
       </section>
 
       <section class="step" data-step="2" hidden>
         <h2>Connect a voice</h2>
-        <p>TalkKobold uses ElevenLabs to generate speech. Paste your API key, then load your voices.</p>
+        <p>Talkobold uses ElevenLabs to generate speech. Paste your API key, then load your voices.</p>
         <div class="field">
           <label for="wzKey">ElevenLabs API key</label>
           <input type="password" id="wzKey" placeholder="xi-…" autocomplete="off" />
@@ -357,10 +357,10 @@
           <input type="checkbox" id="wzMonitor" />
           <label for="wzMonitor">Also play what I say through my own output, so I can hear myself.</label>
         </div>
-        <p>Summon or hide TalkKobold any time with <b>Ctrl + Alt + Space</b>.</p>
+        <p>Summon or hide Talkobold any time with <b>Ctrl + Alt + Space</b>.</p>
         <div class="checkline big">
           <input type="checkbox" id="wzShowOnLaunch" checked />
-          <label for="wzShowOnLaunch">Show this window every time I start TalkKobold.
+          <label for="wzShowOnLaunch">Show this window every time I start Talkobold.
             <span class="hint">(Recommended if the hotkey doesn't work — common on Wayland.)</span>
           </label>
         </div>

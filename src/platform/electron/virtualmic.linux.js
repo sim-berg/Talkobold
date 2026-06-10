@@ -1,10 +1,10 @@
 // Electron-specific (Linux/PipeWire): the virtual microphone provisioning.
 //
 // We spawn one `pw-loopback` process that exposes TWO PipeWire nodes:
-//   - an Audio/Sink  named  TalkKobold-sink  → apps (and our renderer) PLAY into it
-//   - an Audio/Source named  talkkobold-mic   → Discord/Zoom/… pick it as a MIC
+//   - an Audio/Sink  named  Talkobold-sink  → apps (and our renderer) PLAY into it
+//   - an Audio/Source named  talkobold-mic   → Discord/Zoom/… pick it as a MIC
 // pw-loopback wires the sink's captured audio straight to the source, so
-// anything played to TalkKobold-sink comes out of "TalkKobold Mic". Killing the
+// anything played to Talkobold-sink comes out of "Talkobold Mic". Killing the
 // process removes both nodes, so cleanup is automatic on quit.
 //
 // Windows/macOS provision their virtual device differently (VB-Cable /
@@ -46,7 +46,7 @@ function start() {
   }
 
   // Property *values* are parsed as SPA-JSON, so any value containing a space
-  // (e.g. "TalkKobold Mic") must be wrapped in double quotes inside the string.
+  // (e.g. "Talkobold Mic") must be wrapped in double quotes inside the string.
   const args = [
     '-m',
     '[ FL FR ]',

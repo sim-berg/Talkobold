@@ -18,7 +18,7 @@ function createTray({ onToggle, onQuit }) {
     return null;
   }
 
-  tray.setToolTip('TalkKobold');
+  tray.setToolTip('Talkobold');
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: 'Show / Hide  (Ctrl+Alt+Space)', click: onToggle },

@@ -4,7 +4,7 @@
 //            ElevenLabs, we play the mp3 here. Playback + device routing live in
 //            the renderer because setSinkId() is a DOM API.
 //   Phase 3: two audio elements — one targets the virtual sink (what friends
-//            hear via "TalkKobold Mic"), one is the monitor (what YOU hear, with
+//            hear via "Talkobold Mic"), one is the monitor (what YOU hear, with
 //            its own volume + mute).
 //   Phase 4: quick phrases are served from core/phrases.js over IPC, editable
 //            and persisted.
@@ -68,7 +68,7 @@ let editing = false;
 // and whether the matching output device is currently present.
 let vmInfo = null;
 let vmFound = false;
-function sinkHint() { return (vmInfo && vmInfo.sinkHint) || 'TalkKobold-sink'; }
+function sinkHint() { return (vmInfo && vmInfo.sinkHint) || 'Talkobold-sink'; }
 
 // Two independent playback sinks (see header).
 const aMic = new Audio();
@@ -410,7 +410,7 @@ async function loadDevices() {
   // monitor output dropdown (always offer the system default)
   fillSelect(monDevice, outs, settings.monitorDeviceId, 'System default', 'default');
 
-  // is the virtual sink (TalkKobold-sink / "CABLE Input") present at all?
+  // is the virtual sink (Talkobold-sink / "CABLE Input") present at all?
   const hint = sinkHint();
   vmFound = outs.some((d) => (d.label || '').includes(hint));
 
@@ -484,12 +484,12 @@ function renderVmEverywhere() {
   if (isWin) {
     wzVmHelp.innerHTML = present
       ? `Open your call app's audio settings and pick <b>"${vmInfo.micLabel}"</b> as the input device.`
-      : `TalkKobold needs <b>VB-CABLE</b> — a free virtual audio device. Click
+      : `Talkobold needs <b>VB-CABLE</b> — a free virtual audio device. Click
          <b>Install VB-CABLE</b>, run its installer (reboot if it asks), then <b>Re-check</b>.`;
   } else {
     wzVmHelp.innerHTML = `Open your call app's audio settings (Discord, Zoom, a game…)
-      and pick <b>"${vmInfo ? vmInfo.micLabel : 'TalkKobold Mic'}"</b> as the input device.
-      It stays available while TalkKobold is running.`;
+      and pick <b>"${vmInfo ? vmInfo.micLabel : 'Talkobold Mic'}"</b> as the input device.
+      It stays available while Talkobold is running.`;
   }
 }
 

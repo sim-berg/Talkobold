@@ -3,7 +3,7 @@
 // On X11 / XWayland (Electron's default backend) globalShortcut works. On a
 // locked-down native-Wayland session it may silently fail to register — in
 // that case we fall back to a GNOME Custom Shortcut bound to
-// `talkkobold --toggle`, which reaches the running instance via the
+// `talkobold --toggle`, which reaches the running instance via the
 // single-instance lock (see main.js). registerToggle() reports whether the
 // in-app shortcut took, so the UI can tell the user to set up the fallback.
 const { globalShortcut } = require('electron');
